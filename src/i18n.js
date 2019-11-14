@@ -15,6 +15,12 @@ const translation={
         deathReason: t("死因","Death reason"),
         height: t("身高（入院时）","Height"),
         weight: t("体重（入院时）","Weight"),
+    },
+    common:{
+        male:t("男","Male"),
+        female:t("女","Female"),
+        yes:t("是","Yes"),
+        no:t("否","No"),
     }
 };
 
@@ -30,5 +36,17 @@ function i18n(lang){
     })(translation);
 }
 
-export default i18n;
+export default new Proxy(i18n,{
+    get(target, p, receiver) {
+        return {
+            getPreferredLanguage:() => {
+                if (localStorage.getItem("lang")) return localStorage.getItem("lang");
+                for (let item of navigator.languages)
+                    for (let langAvailable of Object.keys(t()))
+                        if (item.startsWith(langAvailable)) return langAvailable;
+                return "en";
+            }
+        }[p];
+    }
+});
 
