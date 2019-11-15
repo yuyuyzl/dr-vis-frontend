@@ -7,25 +7,23 @@ const translation={
         pdid: t("ID"),
         name:t("姓名","Name"),
         birthDate: t("出生日期","Birthdate"),
-        age: t("年龄（入院时）","Age"),
+        age: t("年龄(入院时)","Age"),
         gender: t("性别","Gender"),
         death: t("已去世","Dead"),
         deathDate: t("去世日期","Date of death"),
         deathAge: t("去世时年龄", "Age of death"),
         deathReason: t("死因","Death reason"),
-        height: t("身高（入院时）","Height"),
-        weight: t("体重（入院时）","Weight"),
+        height: t("身高(入院时)","Height"),
+        weight: t("体重(入院时)","Weight"),
     },
     common:{
         male:t("男","Male"),
         female:t("女","Female"),
         yes:t("是","Yes"),
         no:t("否","No"),
+        nodata:t("无数据","No Data")
     }
 };
-
-console.log(translation);
-
 
 function i18n(lang){
     return (function collect(translation){
