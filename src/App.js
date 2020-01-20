@@ -1,8 +1,6 @@
 import React from 'react';
-import './App.css';
-import config from "./config";
-import { BrowserRouter, Route, Link,NavLink } from "react-router-dom";
-import Axios from "axios";
+import './App.less';
+import { BrowserRouter, Route, } from "react-router-dom";
 import PatientPage from "./PatientPage";
 
 function App() {

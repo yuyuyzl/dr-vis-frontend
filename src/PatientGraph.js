@@ -1,10 +1,9 @@
 import React from 'react';
-import './App.css';
+import './App.less';
 import APIHelper from "./APIHelper";
-import I18N from "./i18n";
+//import I18N from "./i18n";
 import ReactEcharts from "echarts-for-react";
-import echarts from "echarts"
-const i18n=I18N(I18N.getPreferredLanguage());
+//const i18n=I18N(I18N.getPreferredLanguage());
 
 class PatientGraph extends React.Component{
     constructor(...args){

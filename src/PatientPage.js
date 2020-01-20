@@ -1,6 +1,6 @@
 import React from 'react';
-import './App.css';
-import { BrowserRouter, Route, Link,NavLink } from "react-router-dom";
+import './App.less';
+// import { BrowserRouter, Route, Link,NavLink } from "react-router-dom";
 import APIHelper from "./APIHelper";
 import PatientInfo from "./PatientInfo";
 import PatientGraph from "./PatientGraph";

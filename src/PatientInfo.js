@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.less';
 import APIHelper from "./APIHelper";
 import I18N from "./i18n";
 const i18n=I18N(I18N.getPreferredLanguage());
