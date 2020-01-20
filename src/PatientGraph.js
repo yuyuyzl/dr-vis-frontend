@@ -17,22 +17,34 @@ class PatientGraph extends React.Component{
         }
     }
     render() {
+        console.log(this.props.patient);
         const patient=[...Number.isInteger(this.props.patient)?this.state.patient:this.props.patient];
         if(patient.length===0)return null;
+        const heightGrid=100;
+        const marginGrid=100;
+        const totHeight=this.props.item.length*(heightGrid+marginGrid)+marginGrid;
         const option=({
-            xAxis: {
+            xAxis: this.props.item.map((key,i)=>({
                 type: 'time',
-            },
-            yAxis: {
-                type: 'value'
-            },
+                gridIndex:i
+            })),
+            yAxis: this.props.item.map((key,i)=>({
+                type: 'value',
+                gridIndex:i
+            })),
+            grid:this.props.item.map((key,i)=>({
+                top:(i*(heightGrid+marginGrid)+marginGrid)*100/totHeight+"%",
+                height:heightGrid*100/totHeight+"%"
+            })),
             tooltip : {trigger:"axis"},
             legend:{},
             series:
-                this.props.item.map(key=>({
+                this.props.item.map((key,i)=>({
                     type:"line",
                     name:key,
-                    data:patient.map(event=>[event.date,event[key]])
+                    data:patient.map(event=>[event.date,event[key]]),
+                    xAxisIndex:i,
+                    yAxisIndex:i,
                 }))
 
         });
@@ -41,7 +53,7 @@ class PatientGraph extends React.Component{
 
         return (
             <div className={"patient-graph"}>
-                <ReactEcharts option={option}/>
+                <ReactEcharts option={option} style={{height:"100vh"}}/>
                 <p>{JSON.stringify(patient)}</p>
             </div>
         )

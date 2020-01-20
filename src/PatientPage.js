@@ -29,12 +29,9 @@ class PatientPage extends React.Component{
                     />
                 </div>
 
-                {/*<p>*/}
-                {/*    {JSON.stringify(this.state.patient)}*/}
-                {/*</p>*/}
-                {/*<p>*/}
-                {/*    {JSON.stringify(this.state.lab)}*/}
-                {/*</p>*/}
+                <p>
+                    {JSON.stringify({patient:this.state.patient,lab:this.state.lab})}
+                </p>
             </div>
         );
     }
