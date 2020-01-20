@@ -8,7 +8,7 @@ import ReactEcharts from "echarts-for-react";
 class PatientGraph extends React.Component{
     constructor(...args){
         super(...args);
-        this.state={patient:{}}
+        this.state={patient:{},selected:{}};
     }
     async componentDidMount() {
         if(Number.isInteger(this.props.patient)){
@@ -20,23 +20,49 @@ class PatientGraph extends React.Component{
         const patient=[...Number.isInteger(this.props.patient)?this.state.patient:this.props.patient];
         if(patient.length===0)return null;
         const heightGrid=100;
-        const marginGrid=100;
-        const totHeight=this.props.item.length*(heightGrid+marginGrid)+marginGrid;
+        const widthGrid=100;
+        const marginGrid=5;
+        const rows=5;
+        const lines=Math.ceil(this.props.item.length/rows);
+        const totHeight=lines*(heightGrid+marginGrid)+marginGrid;
+        const totWidth=rows*(widthGrid+marginGrid)+marginGrid;
         const option=({
             xAxis: this.props.item.map((key,i)=>({
                 type: 'time',
-                gridIndex:i
+                gridIndex:i,
+                show:false,
             })),
             yAxis: this.props.item.map((key,i)=>({
                 type: 'value',
-                gridIndex:i
+                gridIndex:i,
+                show:false,
             })),
             grid:this.props.item.map((key,i)=>({
-                top:(i*(heightGrid+marginGrid)+marginGrid)*100/totHeight+"%",
-                height:heightGrid*100/totHeight+"%"
+                show:true,
+                top:(Math.floor(i/rows)*(heightGrid+marginGrid)+marginGrid)*100/totHeight+"%",
+                height:heightGrid*100/totHeight+"%",
+                left:((i%rows)*(widthGrid+marginGrid)+marginGrid)*100/totWidth+"%",
+                width:widthGrid*100/totWidth+"%",
+                borderWidth: 0,
+                backgroundColor: this.state.selected[i]?'#eee':'#fff',
+                shadowColor: 'rgba(0, 0, 0, 0.3)',
+                shadowBlur: 2,
+            })),
+            // axisPointer: {
+            //     link: {xAxisIndex: 'all'}
+            // },
+            title:this.props.item.map((key,i)=>({
+                text:key,
+                textStyle: {
+                    fontSize: 12,
+                    fontWeight: 'normal'
+                },
+                textAlign:"center",
+                left:((i%rows)*(widthGrid+marginGrid)+marginGrid+0.5*widthGrid)*100/totWidth+"%",
+                top:(Math.floor(i/rows)*(heightGrid+marginGrid)+marginGrid)*100/totHeight+"%",
             })),
             tooltip : {trigger:"axis"},
-            legend:{},
+            //legend:{},
             series:
                 this.props.item.map((key,i)=>({
                     type:"line",
@@ -47,13 +73,25 @@ class PatientGraph extends React.Component{
                 }))
 
         });
-
-
+        const clickListeners=this.props.item.map((key,i)=>()=>{
+            console.log(key,i);
+            this.setState((state)=>{
+                state.selected[i]=!state.selected[i];
+                return state;
+            })
+        });
 
         return (
             <div className={"patient-graph"}>
-                <ReactEcharts option={option} style={{height:"100vh"}}/>
-                <p>{JSON.stringify(patient)}</p>
+                <ReactEcharts onChartReady={echart=>{
+                    echart.getZr().on('click',eClick=>{
+                        const pointInPixel= [eClick.offsetX, eClick.offsetY];
+                        for(let i in clickListeners) {
+                            if (echart.containPixel({gridIndex: i}, pointInPixel)) clickListeners[i]();
+                        }
+                    })
+                }}
+                              option={option} style={{height:"100%"}}/>
             </div>
         )
     }
