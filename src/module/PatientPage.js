@@ -1,7 +1,7 @@
 import React from 'react';
-import './App.less';
+import '../page/App.less';
 // import { BrowserRouter, Route, Link,NavLink } from "react-router-dom";
-import APIHelper from "./APIHelper";
+import APIHelper from "./util/APIHelper";
 import PatientInfo from "./PatientInfo";
 import PatientGraph from "./PatientGraph";
 
@@ -26,6 +26,7 @@ class PatientPage extends React.Component{
                     <PatientGraph
                         patient={this.state.lab}
                         item={["cl", "co2", "wbc", "hgb", "urea", "ca" ,"k" , "na", "cre", "p", "alb", "crp", "glu", "amount", "weight", "sys", "dia"]}
+                        rows={5}
                     />
                 </div>
 

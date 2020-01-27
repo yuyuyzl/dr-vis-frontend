@@ -1,6 +1,6 @@
 import React from 'react';
-import './App.less';
-import APIHelper from "./APIHelper";
+import '../page/App.less';
+import APIHelper from "./util/APIHelper";
 //import I18N from "./i18n";
 import ReactEcharts from "echarts-for-react";
 //const i18n=I18N(I18N.getPreferredLanguage());
@@ -8,21 +8,38 @@ import ReactEcharts from "echarts-for-react";
 class PatientGraph extends React.Component{
     constructor(...args){
         super(...args);
-        this.state={patient:{},selected:{}};
+        this.state={prevPatient:[],patient:[],selected:{}};
+        if(!Number.isInteger(this.props.patient)){
+            this.state.patient=this.props.patient;
+        }
     }
     async componentDidMount() {
         if(Number.isInteger(this.props.patient)){
             this.setState({patient:await APIHelper.getLabById(this.props.patient)})
         }
     }
+
+    static getDerivedStateFromProps(props, state) {
+        // Any time the current user changes,
+        // Reset any parts of state that are tied to that user.
+        // In this simple example, that's just the email.
+        if (props.patient !== state.prevPatient) {
+            return {
+                prevPatient: props.patient,
+                patient: props.patient,
+            };
+        }
+        return null;
+    }
+
     render() {
-        console.log(this.props.patient);
-        const patient=[...Number.isInteger(this.props.patient)?this.state.patient:this.props.patient];
+        //console.log(this.props.patient);
+        const patient=[...this.state.patient];
         if(patient.length===0)return null;
         const heightGrid=100;
         const widthGrid=100;
         const marginGrid=5;
-        const rows=5;
+        const rows=this.props.rows||5;
         const lines=Math.ceil(this.props.item.length/rows);
         const totHeight=lines*(heightGrid+marginGrid)+marginGrid;
         const totWidth=rows*(widthGrid+marginGrid)+marginGrid;
