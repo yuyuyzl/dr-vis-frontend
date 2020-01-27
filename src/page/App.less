@@ -14,7 +14,7 @@
     &-title{
         display: inline;
         font-weight: bold;
-        padding: 0 8px;
+        padding: 0 8px 0 0;
     }
     &-title:after{
         content: ":";
@@ -39,4 +39,29 @@
 
 .patient-graph{
     height: 100vh;
+}
+
+.nav {
+    box-sizing: border-box;
+    width: 100vw;
+    height: 40px;
+    position: sticky;
+    top: 0;
+    left: 0;
+    padding: 8px 16px;
+    background: #203b4e;
+    color: #FFF;
+    z-index: 10001;
+    margin-bottom: 16px;
+    &-content {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+    }
+    &-title {
+        font-size: 18px;
+        color: #FFF;
+        line-height: 24px;
+        height: 24px;
+    }
 }

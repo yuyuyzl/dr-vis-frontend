@@ -1,7 +1,7 @@
 import React from 'react';
 import '../page/App.less';
 // import { BrowserRouter, Route, Link,NavLink } from "react-router-dom";
-import APIHelper from "./util/APIHelper";
+import APIHelper from "../util/APIHelper";
 import PatientInfo from "./PatientInfo";
 import PatientGraph from "./PatientGraph";
 
@@ -18,7 +18,7 @@ class PatientPage extends React.Component{
 
     render() {
         return (
-            <div className={"container"}>
+            <div>
                 <div>
                     <PatientInfo patient={this.state.patient}/>
                 </div>

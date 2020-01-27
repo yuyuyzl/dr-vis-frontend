@@ -2,6 +2,7 @@ import axios from "axios";
 import config from "../config";
 
 config.apiUrl=config.apiUrl+(config.apiUrl.endsWith("/")?"":"/");
+config.predictionUrl=config.predictionUrl+(config.predictionUrl.endsWith("/")?"":"/");
 
 const getApi=async (api,params)=>{
     return (await axios.get(config.apiUrl+api,{
@@ -12,14 +13,11 @@ const getApi=async (api,params)=>{
 }
 
 const APIHelper={
-    getAllPatients: async ()=>{
-        return (await axios.get(config.apiUrl+"patient")).data.data;
-    },
     getPatientById: async (id)=>{
         return await getApi('patient',{pdid:+id});
     },
-    getPatientsByName:async (name)=>{
-        return (await axios.get(config.apiUrl+"p?name="+name)).data;
+    searchPatient: async(key)=>{
+        return await getApi('search',{key:key});
     },
     getLabById:async (id)=>{
         return await getApi('lab',{pdid:+id});

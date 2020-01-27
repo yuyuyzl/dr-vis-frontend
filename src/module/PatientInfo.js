@@ -1,7 +1,7 @@
 import React from 'react';
 import '../page/App.less';
-import APIHelper from "./util/APIHelper";
-import I18N from "./i18n";
+import APIHelper from "../util/APIHelper";
+import I18N from "../util/i18n";
 const i18n=I18N(I18N.getPreferredLanguage());
 
 function InfoColumn(props){
