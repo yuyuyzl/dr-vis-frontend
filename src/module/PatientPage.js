@@ -29,10 +29,6 @@ class PatientPage extends React.Component{
                         rows={5}
                     />
                 </div>
-
-                <p>
-                    {JSON.stringify({patient:this.state.patient,lab:this.state.lab})}
-                </p>
             </div>
         );
     }
