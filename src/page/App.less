@@ -1,3 +1,5 @@
+
+
 .App {
     width: 100vw;
     word-break: break-all;
@@ -54,6 +56,7 @@
     z-index: 10001;
     margin-bottom: 16px;
     &-content {
+        box-sizing: border-box;
         display: flex;
         flex-direction: row;
         width: 100%;
@@ -64,4 +67,59 @@
         line-height: 24px;
         height: 24px;
     }
+}
+
+.search {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    width: 400px;
+    border: 1px solid #00000026;
+    border-radius: 16px;
+    padding: 0 10px;
+    &-input {
+        border: none;
+        padding: 6px;
+        margin: 2px;
+        flex-grow: 1;
+        height: 16px;
+        line-height: 16px;
+    }
+    &-input:focus{
+        border: none;
+        outline: none;
+    }
+    &-menu{
+        width: 100%;
+        position: absolute;
+        top:100%;
+        left: 0;
+        margin-top: 4px;
+        border: 1px solid #00000026;
+        border-radius: 4px;
+        max-height: 30vh;
+        overflow: auto;
+        &-item{
+            width: 100%;
+            text-decoration: none;
+            color:#000;
+            display: block;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+        &-item:hover{
+            background: #0001;
+        }
+        &-item:visited{
+            color: inherit;
+        }
+
+    }
+}
+.wrapper-search{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

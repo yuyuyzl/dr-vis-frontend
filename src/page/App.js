@@ -3,6 +3,7 @@ import './App.less';
 import { BrowserRouter, Route, } from "react-router-dom";
 import PatientPage from "../module/PatientPage";
 import Nav from "../module/Nav";
+import Search from "../module/Search";
 
 function App() {
     return (
@@ -11,7 +12,9 @@ function App() {
                 <Nav/>
                 <div className="container">
                     <Route path={"/"} exact>
-                        Index
+                        <div className='wrapper-search'>
+                            <Search/>
+                        </div>
                     </Route>
                     <Route path={"/patient/:pdid"} render={route=><PatientPage pdid={route.match.params.pdid}/>}/>
                 </div>
