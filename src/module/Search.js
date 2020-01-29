@@ -16,7 +16,7 @@ export default function Search(props) {
         <div className='search' onClick={()=>{searchInput.current.focus()}}>
             <div className='iconfont icon-search'/>
             <input className='search-input' onChange={e=>getResult(e.target.value)} ref={searchInput}/>
-            {resList.length?
+            {(resList&&resList.length)?
                 <div className='search-menu'>
                     {resList.map(o => (
                         <Link to={"/patient/" + o.pdid} className='search-menu-item'>
