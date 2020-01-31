@@ -2,7 +2,6 @@ import axios from "axios";
 import config from "../config";
 
 config.apiUrl=config.apiUrl+(config.apiUrl.endsWith("/")?"":"/");
-config.predictionUrl=config.predictionUrl+(config.predictionUrl.endsWith("/")?"":"/");
 
 const getApi=async (api,params)=>{
     return (await axios.get(config.apiUrl+api,{
@@ -22,6 +21,9 @@ const APIHelper={
     getLabById:async (id)=>{
         return await getApi('lab',{pdid:+id});
     },
+    getAnalyze:async (patient)=>{
+        return (await axios.post(config.apiUrl+'analyze',patient)).data;
+    }
 };
 
 export default APIHelper;

@@ -8,12 +8,17 @@ import PatientGraph from "./PatientGraph";
 class PatientPage extends React.Component{
     constructor(...args){
         super(...args);
-        this.state={patient:{},lab:[]}
+        this.state={patient:{},lab:[],analyze:{}}
     }
 
     async componentDidMount() {
-        this.setState({patient:await APIHelper.getPatientById(this.props.pdid)});
-        this.setState({lab:await APIHelper.getLabById(this.props.pdid)});
+        const patient=await APIHelper.getPatientById(this.props.pdid);
+        this.setState({patient});
+        const lab=await APIHelper.getLabById(this.props.pdid);
+        this.setState({lab});
+        const analyze=await APIHelper.getAnalyze({patient,lab});
+        console.log(analyze);
+        this.setState({analyze});
     }
 
     render() {
