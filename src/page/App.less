@@ -43,6 +43,12 @@
 
 .patient-graph{
     height: 100vh;
+    &-empty{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 32px;
+    }
 }
 
 .nav {
@@ -80,6 +86,7 @@
     border: 1px solid #00000026;
     border-radius: 16px;
     padding: 0 10px;
+    height: 32px;
     &-input {
         border: none;
         padding: 6px;
@@ -109,6 +116,8 @@
             display: block;
             padding: 4px;
             box-sizing: border-box;
+            font-size: 14px;
+            line-height: 18px;
         }
         &-item:hover{
             background: #0001;

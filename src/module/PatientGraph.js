@@ -35,7 +35,7 @@ class PatientGraph extends React.Component{
     render() {
         //console.log(this.props.patient);
         const patient=[...this.state.patient];
-        if(patient.length===0)return null;
+        if(patient.length===0)return (<div className={"patient-graph-empty"}>暂无数据</div>);
         const heightGrid=100;
         const widthGrid=100;
         const marginGrid=5;
