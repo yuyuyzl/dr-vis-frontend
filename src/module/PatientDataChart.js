@@ -18,22 +18,24 @@ function PatientDataChart(props) {
             shadowColor: 'rgba(0, 0, 0, 0.3)',
             shadowBlur: 2,
         }],
-        yAxis: [
-            {
-                name:props.selected[0],
-                type: 'value',
-                shadowColor: 'rgba(0, 0, 0, 0.3)',
-                shadowBlur: 2,
-                position:"left"
+        yAxis: props.selected.map((key,i)=>({
+            name: props.selected[i],
+            type: 'value',
+            axisLine: {
+                lineStyle: {
+                    color:ch.get(key).midColor
+                }
             },
-            {
-                name:props.selected[1],
-                type: 'value',
-                shadowColor: 'rgba(0, 0, 0, 0.3)',
-                shadowBlur: 2,
-                position:"right"
-            }
-        ],
+            axisLabel: {
+                color: '#000'
+            },
+            nameTextStyle: {
+                color: '#000'
+            },
+            offset:i<=1?0:i*40-40,
+            position: i===0?"left":"right",
+
+        })),
         grid:{
             show:false,
             borderWidth: 0,
