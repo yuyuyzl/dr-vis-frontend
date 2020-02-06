@@ -41,14 +41,23 @@
     padding: 0 15px;
 }
 
-.patient-graph{
-    height: 50vh;
+.patient-selector{
+    width: 100%;
+    height: 0;
+    position: relative;
     &-empty{
         width: 100%;
         display: flex;
         justify-content: center;
         padding: 32px;
     }
+}
+
+.patient-chart{
+    width: 100%;
+    height: 0;
+    position: relative;
+    padding-top: 40%;
 }
 
 .nav {
@@ -59,8 +68,8 @@
     top: 0;
     left: 0;
     padding: 8px 16px;
-    background: #203b4e;
-    color: #FFF;
+    background-image: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
+    color: #000;
     z-index: 10001;
     margin-bottom: 16px;
     &-content {
@@ -68,12 +77,17 @@
         display: flex;
         flex-direction: row;
         width: 100%;
+        & a{
+            text-decoration: none;
+        }
     }
     &-title {
         font-size: 18px;
-        color: #FFF;
+        color: #000;
         line-height: 24px;
         height: 24px;
+        font-feature-settings: "pcap";
+        font-variant: petite-caps;
     }
 }
 

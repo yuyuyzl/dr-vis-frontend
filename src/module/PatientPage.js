@@ -3,7 +3,8 @@ import '../page/App.less';
 // import { BrowserRouter, Route, Link,NavLink } from "react-router-dom";
 import APIHelper from "../util/APIHelper";
 import PatientInfo from "./PatientInfo";
-import PatientGraph from "./PatientGraph";
+import PatientLabDataSelector from "./PatientLabDataSelector";
+import PatientDataChart from "./PatientDataChart";
 
 class PatientPage extends React.Component{
     constructor(...args){
@@ -14,8 +15,8 @@ class PatientPage extends React.Component{
     async componentDidMount() {
         const [patient,lab]=await Promise.all([APIHelper.getPatientById(this.props.pdid),APIHelper.getLabById(this.props.pdid)]);
         this.setState({patient,lab});
-        const analyze=await APIHelper.getAnalyze({patient,lab});
-        console.log(analyze);
+        const analyze=patient&&lab&& await APIHelper.getAnalyze({patient,lab});
+        console.log(patient,lab,analyze);
         this.setState({analyze});
     }
 
@@ -25,16 +26,23 @@ class PatientPage extends React.Component{
                 <div>
                     <PatientInfo patient={this.state.patient}/>
                 </div>
-                <PatientGraph
+                <PatientDataChart
+                    lab={this.state.lab}
+                    analyze={this.state.analyze}
+                    selected={this.state.selectedGraph}
+                />
+                <PatientLabDataSelector
                     patient={this.state.lab}
                     item={["cl", "co2", "wbc", "hgb", "urea", "ca" ,"k" , "na", "cre", "p", "alb", "crp", "glu", "amount", "weight", "sys", "dia"]}
                     rows={10}
                     selected={this.state.selectedGraph}
                     onChartClick={(key,i)=>{
                         console.log(key,i);
-                        const newSelectedGraph={...this.state.selectedGraph};
-                        newSelectedGraph[key]=!newSelectedGraph[key];
-                        this.setState({selectedGraph:newSelectedGraph})
+                        const newSelectedGraph=[...this.state.selectedGraph];
+                        const index=newSelectedGraph.indexOf(key);
+                        //newSelectedGraph.[key]=!newSelectedGraph[key];
+                        if(index===-1)newSelectedGraph.push(key);
+                        this.setState({selectedGraph:newSelectedGraph.filter((o,i)=>i!==index)})
                     }}
                 />
             </div>

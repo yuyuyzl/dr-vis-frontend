@@ -9,7 +9,18 @@ const getApi=async (api,params)=>{
             data:JSON.stringify(params)
         }
     })).data.data;
-}
+};
+
+const flipObjectAsArray=(obj)=>{
+    const arr=[];
+    for(let [key,value] of Object.entries(obj)){
+        value.forEach((o,i)=>{
+            if(!arr[i])arr[i]={};
+            arr[i][key]=o;
+        })
+    }
+    return arr;
+};
 
 const APIHelper={
     getPatientById: async (id)=>{
@@ -22,7 +33,10 @@ const APIHelper={
         return await getApi('lab',{pdid:+id});
     },
     getAnalyze:async (patient)=>{
-        return (await axios.post(config.apiUrl+'analyze',patient)).data;
+        const res= (await axios.post(config.apiUrl+'analyze',patient)).data.data;
+        if(res&&res.attention)res.attention=flipObjectAsArray(res.attention);
+        if(res&&res.predict_next_value)res.predict_next_value=flipObjectAsArray(res.predict_next_value);
+        return res;
     }
 };
 
