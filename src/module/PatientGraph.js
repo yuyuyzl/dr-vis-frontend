@@ -1,6 +1,6 @@
 import React from 'react';
 import '../page/App.less';
-import APIHelper from "../util/APIHelper";
+//import APIHelper from "../util/APIHelper";
 //import I18N from "./i18n";
 import ReactEcharts from "echarts-for-react";
 //const i18n=I18N(I18N.getPreferredLanguage());
