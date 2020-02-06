@@ -36,7 +36,7 @@ class PatientGraph extends React.Component{
                 left:((i%rows)*(widthGrid+marginGrid)+marginGrid)*100/totWidth+"%",
                 width:widthGrid*100/totWidth+"%",
                 borderWidth: 0,
-                backgroundColor: (this.props.selected&&this.props.selected[i])?'#eee':'#fff',
+                backgroundColor: (this.props.selected&&this.props.selected[this.props.item[i]])?'#eee':'#fff',
                 shadowColor: 'rgba(0, 0, 0, 0.3)',
                 shadowBlur: 2,
             })),
