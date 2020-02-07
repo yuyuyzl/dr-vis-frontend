@@ -33,7 +33,7 @@ function PatientDataChart(props) {
                 nameTextStyle: {
                     color: '#000'
                 },
-                offset: i <= 1 ? 0 : i * 48 - 48,
+                offset: i <= 1 ? 0 : (i * 48 - 48),
                 position: i === 0 ? "left" : "right",
             })),
             {
@@ -42,6 +42,7 @@ function PatientDataChart(props) {
                 show: props.selected.length===0,
                 min: 0,
                 max: 100,
+                offset: 0,
             }
         ],
         grid:{
@@ -50,7 +51,7 @@ function PatientDataChart(props) {
             backgroundColor: "#fff",
             top:32,
             left:48,
-            right:64+props.selected.length>1?props.selected.length*48:0,
+            right:64+(props.selected.length>2?props.selected.length*48-96:0),
             bottom:32,
         },
         tooltip : {trigger:"axis"},
