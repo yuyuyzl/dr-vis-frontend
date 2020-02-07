@@ -37,6 +37,7 @@ function PatientDataChart(props) {
                 position: i === 0 ? "left" : "right",
             })),
             {
+                name: 'Risk',
                 type: 'value',
                 show: props.selected.length===0,
                 min: 0,
