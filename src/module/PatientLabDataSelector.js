@@ -10,6 +10,7 @@ const ch=new ColorHelper();
 
 function PatientLabDataSelector (props){
     //console.log(props.patient);
+    if(!props.patient)return (<div className={"patient-selector-empty"}>暂无数据</div>);
     const patient=[...props.patient];
     if(patient.length===0)return (<div className={"patient-selector-empty"}>暂无数据</div>);
     const heightGrid=100;

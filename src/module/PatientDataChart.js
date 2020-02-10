@@ -10,6 +10,7 @@ const ch=new ColorHelper();
 
 function PatientDataChart(props) {
     //console.log(props.selected[0]);
+    if(!props.analyze)return null;
     if(props.selected.length<1 && !props.analyze.predict) return null;
     const option=({
         animation:false,

@@ -4,7 +4,7 @@ import config from "../config";
 config.apiUrl=config.apiUrl+(config.apiUrl.endsWith("/")?"":"/");
 
 const getApi=async (api,params)=>{
-    return (await axios.get(config.apiUrl+api,{
+    return (await axios.get(config.apiUrl+api+window.location.search,{
         params:{
             data:JSON.stringify(params)
         }
@@ -33,7 +33,7 @@ const APIHelper={
         return await getApi('lab',{pdid:+id});
     },
     getAnalyze:async (patient)=>{
-        const res= (await axios.post(config.apiUrl+'analyze',patient)).data.data;
+        const res= (await axios.post(config.apiUrl+'analyze'+window.location.search,patient)).data.data;
         if(res&&res.attention)res.attention=flipObjectAsArray(res.attention);
         if(res&&res.predict_next_value)res.predict_next_value=flipObjectAsArray(res.predict_next_value);
         return res;
