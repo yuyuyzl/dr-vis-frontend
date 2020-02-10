@@ -9,9 +9,10 @@ import ColorHelper from "../util/ColorHelper";
 const ch=new ColorHelper();
 
 function PatientDataChart(props) {
-    console.log(props.selected[0]);
+    //console.log(props.selected[0]);
     if(props.selected.length<1 && !props.analyze.predict) return null;
     const option=({
+        animation:false,
         xAxis: [{
             type: 'time',
             show:true,
@@ -54,7 +55,24 @@ function PatientDataChart(props) {
             right:64+(props.selected.length>2?props.selected.length*48-96:0),
             bottom:32,
         },
-        tooltip : {trigger:"axis"},
+        tooltip : {
+            trigger:"axis",
+            formatter:function (params) {
+                //console.log(params);
+                const getCircle=(echartColor)=>`<span style="
+    display: inline-block;
+    margin-right: 5px;
+    border-radius: 10px;
+    width: 10px;
+    height: 10px;
+    background-color: ${echartColor.midColor};
+"> </span>`;
+                const index=params[0].dataIndex;
+                const valueContent=params.map(o=>`<div>${o.marker}${o.seriesName}: ${o.value[1]}</div>`).join("");
+                const attentionContent=Object.entries(props.analyze.attention[index]).filter(o=>o[1]>0).sort((a,b)=>-a[1]+b[1]).map(([k,v])=>`<div>${getCircle(ch.get(k))}${k}: ${(v*100).toFixed(1)}%</div>`).join("");
+                return `<div><div><b>${params[0].value[0]}</b></div>${valueContent}<div><b>Attention</b></div>${attentionContent}</div>`
+            },
+        },
         series:[
             ...props.selected.map((key,i)=>({
                 type:"line",
@@ -67,6 +85,14 @@ function PatientDataChart(props) {
                 lineStyle:{
                     color: ch.get(key)
                 },
+                // markPoint: {
+                //     data:props.lab.map((event,index)=>({
+                //         coord:[event.date,event[key]],
+                //         value:props.analyze.attention[index][key].toFixed(2)
+                //     })).filter(o=>o.value>0),
+                //     //data:[{coord:['2007-08-21',0],value:300}]
+                // },
+
             })),
             {
                 type:"line",
