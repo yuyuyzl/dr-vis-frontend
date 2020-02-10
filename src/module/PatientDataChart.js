@@ -68,7 +68,7 @@ function PatientDataChart(props) {
     background-color: ${echartColor.midColor};
 "> </span>`;
                 const index=params[0].dataIndex;
-                const valueContent=params.map(o=>`<div>${o.marker}${o.seriesName}: ${o.value[1]}</div>`).join("");
+                const valueContent=params.map(o=>`<div>${o.marker}${o.seriesName}: ${Number(o.value[1]).toFixed(2)}</div>`).join("");
                 const attentionContent=Object.entries(props.analyze.attention[index]).filter(o=>o[1]>0).sort((a,b)=>-a[1]+b[1]).map(([k,v])=>`<div>${getCircle(ch.get(k))}${k}: ${(v*100).toFixed(1)}%</div>`).join("");
                 return `<div><div><b>${params[0].value[0]}</b></div>${valueContent}<div><b>Attention</b></div>${attentionContent}</div>`
             },
@@ -79,6 +79,8 @@ function PatientDataChart(props) {
                 name:key,
                 data:props.lab.map(event=>[event.date,event[key]]),
                 yAxisIndex:i,
+                symbol:(value,params)=>(props.analyze.attention[params.dataIndex][key]>0)?'circle':'emptyCircle',
+                symbolSize:(value,params)=>((props.analyze.attention[params.dataIndex][key])*12+4),
                 itemStyle: {
                     color: ch.get(key).midColor
                 },
