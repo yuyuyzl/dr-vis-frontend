@@ -1,4 +1,4 @@
-import React,{ useState,useEffect } from 'react';
+import React,{ useState,useEffect,useRef } from 'react';
 import '../page/App.less';
 //import APIHelper from "../util/APIHelper";
 //import I18N from "./i18n";
@@ -14,6 +14,8 @@ function PatientDataChart({selected,lab,patient}) {
     const [modifiedLab,setModifiedLab]=useState({});
     const [echart,setEchart]=useState(undefined);
     const [analyze,setAnalyze]=useState(undefined);
+    const [inputPos,setInputPos]=useState(undefined);
+    const input=useRef(null);
     useEffect(()=>setModifiedLab(lab), [lab]);
     useEffect(()=>{
         const timeout=setTimeout(()=>patient&&modifiedLab&& APIHelper.getAnalyze({patient,lab:modifiedLab}).then(result=>setAnalyze(result)),500);
@@ -150,27 +152,67 @@ function PatientDataChart({selected,lab,patient}) {
         ],
         graphic:echart?selected.map((key, i) => modifiedLab.map(event => ({
             type: 'circle',
-            shape: {r: 5},
+            shape: {r: 8},
             position: [echart.convertToPixel({xAxisIndex: 0}, event.date), echart.convertToPixel({yAxisIndex: i}, event[key])],
             draggable: true,
             invisible:true,
             z: 100,
+            cursor:"n-resize",
+            onmouseup:(e)=>{
+                if(e.which===3){
+                    let keyModifier=1;
+                    setInputPos([e.offsetX+10,e.offsetY-40]);
+                    input.current.value=parseFloat(event[key]);
+                    input.current.select();
+                    input.current.onkeydown=e=>{
+                        if(e.key==="Enter"){
+                            if(!isNaN(input.current.value))setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
+                                ...o,
+                                [key]: input.current.value
+                            } : o));
+                            setInputPos(undefined);
+                        }
+                        if(e.key==="Escape")setInputPos(undefined);
+                        if(e.key==="Shift")keyModifier=0.1;
+                        if(e.key==="Alt")keyModifier=0.01;
+                    };
+                    input.current.onkeyup=e=>{
+                        if(e.key==="Shift")keyModifier=1;
+                        if(e.key==="Alt")keyModifier=1;
+                    };
+                    input.current.onwheel=e=>{
+                        const delta=Math.round(e.deltaY)*0.01*keyModifier;
+                        console.log(delta);
+                        input.current.value=parseFloat(((isNaN(input.current.value)?parseFloat(event[key]):parseFloat(input.current.value))+delta).toPrecision(12));
+                        if(!isNaN(input.current.value))setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
+                            ...o,
+                            [key]: input.current.value
+                        } : o));
+                    }
+                }
+            },
             ondrag: (e) => {
-                console.log(event.date, key, echart.convertFromPixel({yAxisIndex: i}, e.offsetY));
+                //console.log(event.date, key, echart.convertFromPixel({yAxisIndex: i}, e.offsetY));
                 setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
                     ...o,
                     [key]: echart.convertFromPixel({yAxisIndex: i}, e.offsetY)
                 } : o))
-            },
-            ondragend: () => {
-                console.log(modifiedLab);
             }
         }))).reduce((obj, cur) => [...obj, ...cur], []):undefined
     });
 
     return (
-        <div className={"patient-chart"}>
-            <ReactEcharts onChartReady={echart=>{setEchart(echart)}}
+        <div className={"patient-chart"} onContextMenu={e=>e.preventDefault()}>
+            <input className={"patient-chart-input"} ref={input}
+                   style={inputPos?{top:inputPos[1]+"px",left:inputPos[0]+"px"}:{display:"none"}}/>
+            <ReactEcharts onChartReady={
+                echart=>{
+                    setEchart(echart);
+                    echart.getZr().on('click',e=>{
+                        if(!e.target)setInputPos(undefined);
+                    })
+                }
+            }
                           option={option}
                           style={{position:'absolute',top:0,left:0,right:0,bottom:0,height:'unset'}}
                           key={selected}

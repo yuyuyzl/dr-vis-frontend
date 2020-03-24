@@ -19,9 +19,6 @@ function PatientPage({pdid}) {
             });
     }, [pdid]);
 
-    useEffect(() => {
-        console.log(selectedGraph)
-    }, [selectedGraph]);
 
     return (
         <div>
