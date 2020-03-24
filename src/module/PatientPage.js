@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import '../page/App.less';
 // import { BrowserRouter, Route, Link,NavLink } from "react-router-dom";
 import APIHelper from "../util/APIHelper";
@@ -6,45 +6,48 @@ import PatientInfo from "./PatientInfo";
 import PatientLabDataSelector from "./PatientLabDataSelector";
 import PatientDataChart from "./PatientDataChart";
 
-class PatientPage extends React.Component{
-    constructor(...args){
-        super(...args);
-        this.state={patient:{},lab:[],selectedGraph:[]}
-    }
+function PatientPage({pdid}) {
+    const [patient, setPatient] = useState(undefined);
+    const [lab, setLab] = useState(undefined);
+    const [selectedGraph, setSelectedGraph] = useState([]);
 
-    async componentDidMount() {
-        const [patient,lab]=await Promise.all([APIHelper.getPatientById(this.props.pdid),APIHelper.getLabById(this.props.pdid)]);
-        this.setState({patient,lab});
-    }
+    useEffect(() => {
+        Promise.all([APIHelper.getPatientById(pdid), APIHelper.getLabById(pdid)])
+            .then(([patient, lab]) => {
+                setLab(lab);
+                setPatient(patient)
+            });
+    }, [pdid]);
 
-    render() {
-        return (
+    useEffect(() => {
+        console.log(selectedGraph)
+    }, [selectedGraph]);
+
+    return (
+        <div>
             <div>
-                <div>
-                    <PatientInfo patient={this.state.patient}/>
-                </div>
-                <PatientDataChart
-                    lab={this.state.lab}
-                    patient={this.state.patient}
-                    selected={this.state.selectedGraph}
-                />
-                <PatientLabDataSelector
-                    patient={this.state.lab}
-                    item={["cl", "co2", "wbc", "hgb", "urea", "ca" ,"k" , "na", "cre", "p", "alb", "crp", "glu", "amount", "weight", "sys", "dia"]}
-                    rows={10}
-                    selected={this.state.selectedGraph}
-                    onChartClick={(key,i)=>{
-                        console.log(key,i);
-                        const newSelectedGraph=[...this.state.selectedGraph];
-                        const index=newSelectedGraph.indexOf(key);
-                        //newSelectedGraph.[key]=!newSelectedGraph[key];
-                        if(index===-1)newSelectedGraph.push(key);
-                        this.setState({selectedGraph:newSelectedGraph.filter((o,i)=>i!==index)})
-                    }}
-                />
+                <PatientInfo patient={patient}/>
             </div>
-        );
-    }
+            <PatientDataChart
+                lab={lab}
+                patient={patient}
+                selected={selectedGraph}
+            />
+            <PatientLabDataSelector
+                patient={lab}
+                item={["cl", "co2", "wbc", "hgb", "urea", "ca", "k", "na", "cre", "p", "alb", "crp", "glu", "amount", "weight", "sys", "dia"]}
+                rows={10}
+                selected={selectedGraph}
+                onChartClick={(key, i) => {
+                    setSelectedGraph(selectedGraph =>
+                        selectedGraph.indexOf(key) === -1 ?
+                            [...selectedGraph, key] : selectedGraph.filter(a => a !== key));
+                }}
+                //key={selectedGraph}
+            />
+        </div>
+    );
+
 
 }
 

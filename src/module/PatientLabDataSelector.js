@@ -21,6 +21,7 @@ function PatientLabDataSelector (props){
     const totHeight=lines*(heightGrid+marginGrid)+marginGrid;
     const totWidth=rows*(widthGrid+marginGrid)+marginGrid;
     const option=({
+        animation:false,
         xAxis: props.item.map((key,i)=>({
             type: 'time',
             gridIndex:i,
@@ -88,7 +89,8 @@ function PatientLabDataSelector (props){
                 })
             }}
                           option={option}
-                          style={{position:'absolute',top:0,left:0,right:0,bottom:0,height:'unset'}}/>
+                          style={{position:'absolute',top:0,left:0,right:0,bottom:0,height:'unset'}}
+            />
         </div>
     )
     
