@@ -182,7 +182,7 @@ function PatientDataChart({selected,lab,patient}) {
                     };
                     input.current.onwheel=e=>{
                         const delta=Math.round(e.deltaY)*0.01*keyModifier;
-                        console.log(delta);
+                        //console.log(delta);
                         input.current.value=parseFloat(((isNaN(input.current.value)?parseFloat(event[key]):parseFloat(input.current.value))+delta).toPrecision(12));
                         if(!isNaN(input.current.value))setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
                             ...o,
