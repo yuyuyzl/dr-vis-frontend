@@ -1,19 +1,29 @@
-import React from 'react';
+import React,{ useState,useEffect } from 'react';
 import '../page/App.less';
 //import APIHelper from "../util/APIHelper";
 //import I18N from "./i18n";
 import ReactEcharts from "echarts-for-react";
 //const i18n=I18N(I18N.getPreferredLanguage());
 import ColorHelper from "../util/ColorHelper";
+import APIHelper from "../util/APIHelper";
 
 const ch=new ColorHelper();
 
-function PatientDataChart(props) {
+function PatientDataChart({selected,lab,patient}) {
     //console.log(props.selected[0]);
-    if(!props.analyze)return null;
-    if(props.selected.length<1 && !props.analyze.predict) return null;
+    const [modifiedLab,setModifiedLab]=useState({});
+    const [echart,setEchart]=useState(undefined);
+    const [analyze,setAnalyze]=useState(undefined);
+    useEffect(()=>setModifiedLab(lab), [lab]);
+    useEffect(()=>{
+        const timeout=setTimeout(()=>patient&&modifiedLab&& APIHelper.getAnalyze({patient,lab:modifiedLab}).then(result=>setAnalyze(result)),500);
+        return ()=>clearTimeout(timeout);
+    },[modifiedLab, patient]);
+    if(!analyze)return null;
+    if(selected.length<1 && !analyze.predict) return null;
+    
     const option=({
-        animation:false,
+        animation:true,
         xAxis: [{
             type: 'time',
             show:true,
@@ -21,8 +31,8 @@ function PatientDataChart(props) {
             shadowBlur: 2,
         }],
         yAxis: [
-            ...props.selected.map((key,i)=>({
-                name: props.selected[i],
+            ...selected.map((key,i)=>({
+                name: selected[i],
                 type: 'value',
                 axisLine: {
                     lineStyle: {
@@ -41,7 +51,7 @@ function PatientDataChart(props) {
             {
                 name: 'Risk',
                 type: 'value',
-                show: props.selected.length===0,
+                show: selected.length===0,
                 min: 0,
                 max: 100,
                 offset: 0,
@@ -53,7 +63,7 @@ function PatientDataChart(props) {
             backgroundColor: "#fff",
             top:32,
             left:48,
-            right:64+(props.selected.length>2?props.selected.length*48-96:0),
+            right:64+(selected.length>2?selected.length*48-96:0),
             bottom:32,
         },
         tooltip : {
@@ -70,18 +80,18 @@ function PatientDataChart(props) {
 "> </span>`;
                 const index=params[0].dataIndex;
                 const valueContent=params.map(o=>`<div>${o.marker}${o.seriesName}: ${Number(o.value[1]).toFixed(2)}</div>`).join("");
-                const attentionContent=Object.entries(props.analyze.attention[index]).filter(o=>o[1]>0).sort((a,b)=>-a[1]+b[1]).map(([k,v])=>`<div>${getCircle(ch.get(k))}${k}: ${(v*100).toFixed(1)}%</div>`).join("");
+                const attentionContent=Object.entries(analyze.attention[index]).filter(o=>o[1]>0).sort((a,b)=>-a[1]+b[1]).map(([k,v])=>`<div>${getCircle(ch.get(k))}${k}: ${(v*100).toFixed(1)}%</div>`).join("");
                 return `<div><div><b>${params[0].value[0]}</b></div>${valueContent}<div><b>Attention</b></div>${attentionContent}</div>`
             },
         },
         series:[
-            ...props.selected.map((key,i)=>({
+            ...selected.map((key,i)=>({
                 type:"line",
                 name:key,
-                data:props.lab.map(event=>[event.date,event[key]]),
+                data:modifiedLab.map(event=>[event.date,event[key]]),
                 yAxisIndex:i,
-                symbol:(value,params)=>(props.analyze.attention[params.dataIndex][key]>0)?'circle':'emptyCircle',
-                symbolSize:(value,params)=>((props.analyze.attention[params.dataIndex][key])*12+4),
+                symbol:(value,params)=>(analyze.attention[params.dataIndex][key]>0)?'circle':'emptyCircle',
+                symbolSize:(value,params)=>((analyze.attention[params.dataIndex][key])*12+4),
                 itemStyle: {
                     color: ch.get(key).midColor
                 },
@@ -89,9 +99,9 @@ function PatientDataChart(props) {
                     color: ch.get(key)
                 },
                 // markPoint: {
-                //     data:props.lab.map((event,index)=>({
+                //     data:modifiedLab.map((event,index)=>({
                 //         coord:[event.date,event[key]],
-                //         value:props.analyze.attention[index][key].toFixed(2)
+                //         value:analyze.attention[index][key].toFixed(2)
                 //     })).filter(o=>o.value>0),
                 //     //data:[{coord:['2007-08-21',0],value:300}]
                 // },
@@ -100,8 +110,8 @@ function PatientDataChart(props) {
             {
                 type:"line",
                 name:"Risk",
-                data:props.lab.map((event,i)=>[event.date,props.analyze.predict[i]*100]),
-                yAxisIndex:props.selected.length,
+                data:modifiedLab.map((event,i)=>[event.date,analyze.predict[i]*100]),
+                yAxisIndex:selected.length,
                 lineStyle:{
                     color: {
                         type: 'linear',
@@ -116,7 +126,7 @@ function PatientDataChart(props) {
                         }],
                         global: false,
                     },
-                    opacity:props.selected.length===0?0.3:0.1
+                    opacity:selected.length===0?0.3:0.1
                 },
                 areaStyle:{
                     color: {
@@ -132,19 +142,38 @@ function PatientDataChart(props) {
                         }],
                         global: false,
                     },
-                    opacity:props.selected.length===0?0.3:0.1
+                    opacity:selected.length===0?0.3:0.1
                 },
                 symbol:"none",
                 smooth:0.2,
             }
-        ]
+        ],
+        graphic:echart?selected.map((key, i) => modifiedLab.map(event => ({
+            type: 'circle',
+            shape: {r: 5},
+            position: [echart.convertToPixel({xAxisIndex: 0}, event.date), echart.convertToPixel({yAxisIndex: i}, event[key])],
+            draggable: true,
+            invisible:true,
+            z: 100,
+            ondrag: (e) => {
+                console.log(event.date, key, echart.convertFromPixel({yAxisIndex: i}, e.offsetY));
+                setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
+                    ...o,
+                    [key]: echart.convertFromPixel({yAxisIndex: i}, e.offsetY)
+                } : o))
+            },
+            ondragend: () => {
+                console.log(modifiedLab);
+            }
+        }))).reduce((obj, cur) => [...obj, ...cur], []):undefined
     });
+
     return (
         <div className={"patient-chart"}>
-            <ReactEcharts onChartReady={echart=>{}}
+            <ReactEcharts onChartReady={echart=>{setEchart(echart)}}
                           option={option}
                           style={{position:'absolute',top:0,left:0,right:0,bottom:0,height:'unset'}}
-                          key={props.selected}
+                          key={selected}
             />
         </div>
     )

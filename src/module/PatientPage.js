@@ -9,15 +9,12 @@ import PatientDataChart from "./PatientDataChart";
 class PatientPage extends React.Component{
     constructor(...args){
         super(...args);
-        this.state={patient:{},lab:[],analyze:{},selectedGraph:[]}
+        this.state={patient:{},lab:[],selectedGraph:[]}
     }
 
     async componentDidMount() {
         const [patient,lab]=await Promise.all([APIHelper.getPatientById(this.props.pdid),APIHelper.getLabById(this.props.pdid)]);
         this.setState({patient,lab});
-        const analyze=patient&&lab&& await APIHelper.getAnalyze({patient,lab});
-        console.log(patient,lab,analyze);
-        this.setState({analyze});
     }
 
     render() {
@@ -28,7 +25,7 @@ class PatientPage extends React.Component{
                 </div>
                 <PatientDataChart
                     lab={this.state.lab}
-                    analyze={this.state.analyze}
+                    patient={this.state.patient}
                     selected={this.state.selectedGraph}
                 />
                 <PatientLabDataSelector
