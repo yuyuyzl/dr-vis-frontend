@@ -9,6 +9,9 @@ export default function Nav(props) {
                 <Link to={'/'}>
                     <div className='nav-title'>Dr.Vis</div>
                 </Link>
+                <Link to={'/settings'}>
+                    <div className='iconfont icon-icon-test'/>
+                </Link>
             </div>
         </div>
     )
