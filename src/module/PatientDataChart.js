@@ -46,11 +46,18 @@ function PatientDataChart({selected,lab,patient,modifiedLab,setModifiedLab,analy
             {
                 name: 'Risk',
                 type: 'value',
-                show: selected.length===0,
+                show: selected.length===0&&analyze.predict,
                 min: 0,
                 max: 100,
                 offset: 0,
-            }
+            },
+            {
+                name: 'Stage Variation',
+                type: 'value',
+                show: selected.length===0&&analyze.stage,
+                offset: 0,
+                position:"right",
+            },
         ],
         grid:{
             show:false,
@@ -141,7 +148,47 @@ function PatientDataChart({selected,lab,patient,modifiedLab,setModifiedLab,analy
                 },
                 symbol:"none",
                 smooth:0.2,
-            }
+            },
+            analyze.stage&&{
+                type:"line",
+                name:"Stage Variation",
+                data:modifiedLab.map((event,i)=>[event.date,analyze.stage[i]]),
+                yAxisIndex:selected.length+1,
+                lineStyle:{
+                    color: {
+                        type: 'linear',
+                        x: 0,
+                        y: 1,
+                        x2: 0,
+                        y2: 0,
+                        colorStops: [{
+                            offset: 0, color: "#1e3c72"
+                        }, {
+                            offset: 1, color: "#2a5298"
+                        }],
+                        global: false,
+                    },
+                    opacity:selected.length===0?0.3:0.1
+                },
+                areaStyle:{
+                    color: {
+                        type: 'linear',
+                        x: 0,
+                        y: 1,
+                        x2: 0,
+                        y2: 0,
+                        colorStops: [{
+                            offset: 0, color: "#1e3c72"
+                        }, {
+                            offset: 1, color: "#2a5298"
+                        }],
+                        global: false,
+                    },
+                    opacity:selected.length===0?0.3:0.1
+                },
+                symbol:"none",
+                smooth:0.2,
+            },
         ],
         graphic:echart?selected.map((key, selectedIndex) => modifiedLab.map((event,labIndex) => ({
             type: 'circle',
@@ -161,12 +208,12 @@ function PatientDataChart({selected,lab,patient,modifiedLab,setModifiedLab,analy
                     input.current.onkeydown=e=> {
                         if (e.key === "Enter") {
                             if (input.current.value !== "" && !isNaN(+input.current.value))
-                                setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
+                                setModifiedLab(modifiedLab=>modifiedLab.map(o => o.date === event.date ? {
                                     ...o,
                                     [key]: input.current.value
                                 } : o));
                             else if (input.current.value === "")
-                                setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
+                                setModifiedLab(modifiedLab=>modifiedLab.map(o => o.date === event.date ? {
                                     ...o,
                                     [key]: lab[labIndex][key]
                                 } : o));
@@ -182,9 +229,8 @@ function PatientDataChart({selected,lab,patient,modifiedLab,setModifiedLab,analy
                     };
                     input.current.onwheel=e=>{
                         const delta=Math.round(e.deltaY)*0.01*keyModifier;
-                        //console.log(delta);
-                        input.current.value=parseFloat((((input.current.value!==""&&!isNaN(+input.current.value))?parseFloat(event[key]):parseFloat(input.current.value))+delta).toPrecision(12));
-                        if(!isNaN(input.current.value))setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
+                        input.current.value=parseFloat((parseFloat(input.current.value)+delta).toPrecision(12));
+                        if(!isNaN(input.current.value))setModifiedLab(modifiedLab=>modifiedLab.map(o => o.date === event.date ? {
                             ...o,
                             [key]: input.current.value
                         } : o));

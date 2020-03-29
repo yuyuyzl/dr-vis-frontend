@@ -8,31 +8,30 @@ import ColorHelper from "../util/ColorHelper";
 
 const ch=new ColorHelper();
 
-function PatientLabDataSelector (props){
+function PatientLabDataSelector ({patient,rows=5,item,selected,onChartClick}){
     //console.log(props.patient);
-    if(!props.patient)return (<div className={"patient-selector-empty"}>暂无数据</div>);
-    const patient=[...props.patient];
-    if(patient.length===0)return (<div className={"patient-selector-empty"}>暂无数据</div>);
+    if(!patient)return (<div className={"patient-selector-empty"}>暂无数据</div>);
+    const data=[...patient];
+    if(data.length===0)return (<div className={"patient-selector-empty"}>暂无数据</div>);
     const heightGrid=100;
     const widthGrid=100;
     const marginGrid=8;
-    const rows=props.rows||5;
-    const lines=Math.ceil(props.item.length/rows);
+    const lines=Math.ceil(item.length/rows);
     const totHeight=lines*(heightGrid+marginGrid)+marginGrid;
     const totWidth=rows*(widthGrid+marginGrid)+marginGrid;
     const option=({
         animation:false,
-        xAxis: props.item.map((key,i)=>({
+        xAxis: item.map((key,i)=>({
             type: 'time',
             gridIndex:i,
             show:false,
         })),
-        yAxis: props.item.map((key,i)=>({
+        yAxis: item.map((key,i)=>({
             type: 'value',
             gridIndex:i,
             show:false,
         })),
-        grid:props.item.map((key,i)=>({
+        grid:item.map((key,i)=>({
             show:true,
             top:(Math.floor(i/rows)*(heightGrid+marginGrid)+marginGrid)*100/totHeight+"%",
             height:heightGrid*100/totHeight+"%",
@@ -40,13 +39,13 @@ function PatientLabDataSelector (props){
             width:widthGrid*100/totWidth+"%",
             borderWidth: 0,
             backgroundColor: "#fff",
-            shadowColor: (props.selected&&props.selected.indexOf(props.item[i])!==-1)?'rgba(71,167,255,0.8)':'rgba(0, 0, 0, 0.3)',
-            shadowBlur: (props.selected&&props.selected.indexOf(props.item[i])!==-1)?4:2,
+            shadowColor: (selected&&selected.indexOf(item[i])!==-1)?'rgba(71,167,255,0.8)':'rgba(0, 0, 0, 0.3)',
+            shadowBlur: (selected&&selected.indexOf(item[i])!==-1)?4:2,
         })),
         // axisPointer: {
         //     link: {xAxisIndex: 'all'}
         // },
-        title:props.item.map((key,i)=>({
+        title:item.map((key,i)=>({
             text:key,
             textStyle: {
                 fontSize: 12,
@@ -61,10 +60,10 @@ function PatientLabDataSelector (props){
         tooltip : {trigger:"axis"},
         //legend:{},
         series:
-            props.item.map((key,i)=>({
+            item.map((key,i)=>({
                 type:"line",
                 name:key,
-                data:patient.map(event=>[event.date,event[key]]),
+                data:data.map(event=>[event.date,event[key]]),
                 xAxisIndex:i,
                 yAxisIndex:i,
                 itemStyle: {
@@ -82,9 +81,9 @@ function PatientLabDataSelector (props){
             <ReactEcharts onChartReady={echart=>{
                 echart.getZr().on('click',eClick=>{
                     const pointInPixel= [eClick.offsetX, eClick.offsetY];
-                    if(props.onChartClick)
-                        props.item.forEach((key,i)=>{
-                            if (echart.containPixel({gridIndex: i}, pointInPixel)) props.onChartClick(key,i);
+                    if(onChartClick)
+                        item.forEach((key,i)=>{
+                            if (echart.containPixel({gridIndex: i}, pointInPixel)) onChartClick(key,i);
                         });
                 })
             }}
