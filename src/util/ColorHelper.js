@@ -1,6 +1,6 @@
 import color from "color";
 
-function gra(l,r) {
+const gra=function (l,r) {
     return {
         type: 'linear',
         x: 0,
@@ -125,7 +125,7 @@ colorList=colorList.filter(a=>(color(a.midColor).luminosity()<0.5));
 colorList.sort((a,b)=>color(a.midColor).hue()-color(b.midColor).hue());
 console.log(colorList.length);
 
-function *colorGenerator(offset=25,step=11) {
+const colorGenerator=function *(offset=25,step=11) {
     let h=offset;
     while (true){
         yield colorList[(h+=step)%colorList.length];

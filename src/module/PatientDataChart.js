@@ -1,26 +1,19 @@
-import React,{ useState,useEffect,useRef } from 'react';
+import React,{ useState,useRef } from 'react';
 import '../page/App.less';
 //import APIHelper from "../util/APIHelper";
 //import I18N from "./i18n";
 import ReactEcharts from "echarts-for-react";
 //const i18n=I18N(I18N.getPreferredLanguage());
 import ColorHelper from "../util/ColorHelper";
-import APIHelper from "../util/APIHelper";
 
 const ch=new ColorHelper();
 
-function PatientDataChart({selected,lab,patient}) {
+function PatientDataChart({selected,lab,patient,modifiedLab,setModifiedLab,analyze}) {
     //console.log(props.selected[0]);
-    const [modifiedLab,setModifiedLab]=useState({});
+
     const [echart,setEchart]=useState(undefined);
-    const [analyze,setAnalyze]=useState(undefined);
     const [inputPos,setInputPos]=useState(undefined);
     const input=useRef(null);
-    useEffect(()=>setModifiedLab(lab), [lab]);
-    useEffect(()=>{
-        const timeout=setTimeout(()=>patient&&modifiedLab&& APIHelper.getAnalyze({patient,lab:modifiedLab}).then(result=>setAnalyze(result)),500);
-        return ()=>clearTimeout(timeout);
-    },[modifiedLab, patient]);
     if(!analyze)return null;
     if(selected.length<1 && !analyze.predict) return null;
     

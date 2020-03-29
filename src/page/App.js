@@ -5,6 +5,7 @@ import Analytics from 'react-router-ga';
 import PatientPage from "../module/PatientPage";
 import Nav from "../module/Nav";
 import Search from "../module/Search";
+import Settings from "../module/Settings";
 
 function App() {
     return (
@@ -19,6 +20,9 @@ function App() {
                             </div>
                         </Route>
                         <Route path={"/patient/:pdid"} render={route=><PatientPage pdid={route.match.params.pdid}/>}/>
+                        <Route path={"/settings"} exact>
+                            <Settings/>
+                        </Route>
                     </div>
                 </Analytics>
             </BrowserRouter>

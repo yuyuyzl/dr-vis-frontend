@@ -5,20 +5,30 @@ import APIHelper from "../util/APIHelper";
 import PatientInfo from "./PatientInfo";
 import PatientLabDataSelector from "./PatientLabDataSelector";
 import PatientDataChart from "./PatientDataChart";
+import SettingsHelper from "../util/SettingsHelper";
 
 function PatientPage({pdid}) {
     const [patient, setPatient] = useState(undefined);
     const [lab, setLab] = useState(undefined);
     const [selectedGraph, setSelectedGraph] = useState([]);
+    const [settings]=useState(SettingsHelper.load());
+    const [modifiedLab,setModifiedLab]=useState({});
+    const [analyze,setAnalyze]=useState(undefined);
 
     useEffect(() => {
         Promise.all([APIHelper.getPatientById(pdid), APIHelper.getLabById(pdid)])
             .then(([patient, lab]) => {
                 setLab(lab);
-                setPatient(patient)
+                setPatient(patient);
             });
     }, [pdid]);
 
+    useEffect(()=>setModifiedLab(lab), [lab]);
+
+    useEffect(()=>{
+        const timeout=setTimeout(()=>patient&&modifiedLab&& APIHelper.getAnalyze({patient,lab:modifiedLab},settings.analyzeApi).then(result=>setAnalyze(result)),500);
+        return ()=>clearTimeout(timeout);
+    },[modifiedLab, patient, settings.analyzeApi]);
 
     return (
         <div>
@@ -29,6 +39,9 @@ function PatientPage({pdid}) {
                 lab={lab}
                 patient={patient}
                 selected={selectedGraph}
+                modifiedLab={modifiedLab}
+                setModifiedLab={setModifiedLab}
+                analyze={analyze}
             />
             <PatientLabDataSelector
                 patient={lab}
