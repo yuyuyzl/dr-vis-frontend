@@ -150,10 +150,10 @@ function PatientDataChart({selected,lab,patient}) {
                 smooth:0.2,
             }
         ],
-        graphic:echart?selected.map((key, i) => modifiedLab.map(event => ({
+        graphic:echart?selected.map((key, selectedIndex) => modifiedLab.map((event,labIndex) => ({
             type: 'circle',
             shape: {r: 8},
-            position: [echart.convertToPixel({xAxisIndex: 0}, event.date), echart.convertToPixel({yAxisIndex: i}, event[key])],
+            position: [echart.convertToPixel({xAxisIndex: 0}, event.date), echart.convertToPixel({yAxisIndex: selectedIndex}, event[key])],
             draggable: true,
             invisible:true,
             z: 100,
@@ -163,18 +163,25 @@ function PatientDataChart({selected,lab,patient}) {
                     let keyModifier=1;
                     setInputPos([e.offsetX+10,e.offsetY-40]);
                     input.current.value=parseFloat(event[key]);
+                    input.current.placeholder=parseFloat(lab[labIndex][key]);
                     input.current.select();
-                    input.current.onkeydown=e=>{
-                        if(e.key==="Enter"){
-                            if(!isNaN(input.current.value))setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
-                                ...o,
-                                [key]: input.current.value
-                            } : o));
+                    input.current.onkeydown=e=> {
+                        if (e.key === "Enter") {
+                            if (input.current.value !== "" && !isNaN(+input.current.value))
+                                setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
+                                    ...o,
+                                    [key]: input.current.value
+                                } : o));
+                            else if (input.current.value === "")
+                                setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
+                                    ...o,
+                                    [key]: lab[labIndex][key]
+                                } : o));
                             setInputPos(undefined);
                         }
-                        if(e.key==="Escape")setInputPos(undefined);
-                        if(e.key==="Shift")keyModifier=0.1;
-                        if(e.key==="Alt")keyModifier=0.01;
+                        if (e.key === "Escape") setInputPos(undefined);
+                        if (e.key === "Shift") keyModifier = 0.1;
+                        if (e.key === "Alt") keyModifier = 0.01;
                     };
                     input.current.onkeyup=e=>{
                         if(e.key==="Shift")keyModifier=1;
@@ -183,7 +190,7 @@ function PatientDataChart({selected,lab,patient}) {
                     input.current.onwheel=e=>{
                         const delta=Math.round(e.deltaY)*0.01*keyModifier;
                         //console.log(delta);
-                        input.current.value=parseFloat(((isNaN(input.current.value)?parseFloat(event[key]):parseFloat(input.current.value))+delta).toPrecision(12));
+                        input.current.value=parseFloat((((input.current.value!==""&&!isNaN(+input.current.value))?parseFloat(event[key]):parseFloat(input.current.value))+delta).toPrecision(12));
                         if(!isNaN(input.current.value))setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
                             ...o,
                             [key]: input.current.value
@@ -193,9 +200,10 @@ function PatientDataChart({selected,lab,patient}) {
             },
             ondrag: (e) => {
                 //console.log(event.date, key, echart.convertFromPixel({yAxisIndex: i}, e.offsetY));
+                if(inputPos)setInputPos(undefined);
                 setModifiedLab(modifiedLab.map(o => o.date === event.date ? {
                     ...o,
-                    [key]: echart.convertFromPixel({yAxisIndex: i}, e.offsetY)
+                    [key]: echart.convertFromPixel({yAxisIndex: selectedIndex}, e.offsetY)
                 } : o))
             }
         }))).reduce((obj, cur) => [...obj, ...cur], []):undefined

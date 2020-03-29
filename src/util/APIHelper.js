@@ -32,10 +32,13 @@ const APIHelper={
     getLabById:async (id)=>{
         return await getApi('lab',{pdid:+id});
     },
-    getAnalyze:async (patient)=>{
-        const res= (await axios.post(config.apiUrl+'analyze'+window.location.search,patient)).data.data;
+    getAnalyze:async (patient,backendUrl=["http://api.drvis.yuyuyz.ltd:10406/","http://api.drvis.yuyuyz.ltd:10407/","http://api.drvis.yuyuyz.ltd:10408/","http://api.drvis.yuyuyz.ltd:10409/",])=>{
+        //const res= (await axios.post(backendUrl,patient)).data;
+        const res=(await Promise.all(backendUrl.map(url=>axios.post(url,patient))))
+            .reduce((p,c)=>({...c.data,...p}),{});
         if(res&&res.attention)res.attention=flipObjectAsArray(res.attention);
         if(res&&res.predict_next_value)res.predict_next_value=flipObjectAsArray(res.predict_next_value);
+        console.log(res);
         return res;
     }
 };
