@@ -4,7 +4,12 @@ import '../page/App.less';
 import SettingsHelper from "../util/SettingsHelper";
 
 function Settings() {
-    const [settings] = useState(SettingsHelper.load());
+    const [settings,setSettings] = useState(SettingsHelper.load());
+
+    useEffect(()=>{
+        SettingsHelper.save(settings);
+    },[settings]);
+
     return (
         <div className='settings'>
             <h3>Settings</h3>
@@ -17,11 +22,17 @@ function Settings() {
                     </tr>
                 </thead>
                 <tbody>
-                {settings.analyzeApi.map(api => (
-                    <tr key={api.url}>
+                {settings.analyzeApi.map((api,index) => (
+                    <tr>
                         <td>{api.alias}</td>
                         <td>{api.url}</td>
-                        <td>{api.enabled ? "启用" : "禁用"}</td>
+                        <td onClick={()=>{
+                            setSettings(settings=>{
+                                const temp={...settings};
+                                temp.analyzeApi[index].enabled=!temp.analyzeApi[index].enabled;
+                                return temp;
+                            })
+                        }}>{api.enabled ? "启用" : "禁用"}</td>
                     </tr>
                 ))}
                 </tbody>
