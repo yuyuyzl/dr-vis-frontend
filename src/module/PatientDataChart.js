@@ -75,8 +75,8 @@ function PatientDataChart({selected,lab,patient,modifiedLab,setModifiedLab,analy
 "> </span>`;
                 const index=params[0].dataIndex;
                 const valueContent=params.map(o=>`<div>${o.marker}${o.seriesName}: ${Number(o.value[1]).toFixed(2)}</div>`).join("");
-                const attentionContent=Object.entries(analyze.attention[index]).filter(o=>o[1]>0).sort((a,b)=>-a[1]+b[1]).map(([k,v])=>`<div>${getCircle(ch.get(k))}${k}: ${(v*100).toFixed(1)}%</div>`).join("");
-                return `<div><div><b>${params[0].value[0]}</b></div>${valueContent}<div><b>Attention</b></div>${attentionContent}</div>`
+                const attentionContent=analyze.attention?Object.entries(analyze.attention[index]).filter(o=>o[1]>0).sort((a,b)=>-a[1]+b[1]).map(([k,v])=>`<div>${getCircle(ch.get(k))}${k}: ${(v*100).toFixed(1)}%</div>`).join(""):undefined;
+                return `<div><div><b>${params[0].value[0]}</b></div>${valueContent}<div>${attentionContent?`<b>Attention</b></div>${attentionContent}</div>`:''}`
             },
         },
         series:[
@@ -85,8 +85,8 @@ function PatientDataChart({selected,lab,patient,modifiedLab,setModifiedLab,analy
                 name:key,
                 data:modifiedLab.map(event=>[event.date,event[key]]),
                 yAxisIndex:i,
-                symbol:(value,params)=>(analyze.attention[params.dataIndex][key]>0)?'circle':'emptyCircle',
-                symbolSize:(value,params)=>((analyze.attention[params.dataIndex][key])*12+4),
+                symbol:(value,params)=>(analyze.attention&&analyze.attention[params.dataIndex][key]>0)?'circle':'emptyCircle',
+                symbolSize:(value,params)=>(analyze.attention?(analyze.attention[params.dataIndex][key])*12+4:8),
                 itemStyle: {
                     color: ch.get(key).midColor
                 },
@@ -102,7 +102,7 @@ function PatientDataChart({selected,lab,patient,modifiedLab,setModifiedLab,analy
                 // },
 
             })),
-            {
+            analyze.predict&&{
                 type:"line",
                 name:"Risk",
                 data:modifiedLab.map((event,i)=>[event.date,analyze.predict[i]*100]),
