@@ -37,7 +37,7 @@ export default function Search(props) {
             {(resList&&resList.length)?
                 <div className='search-menu'>
                     {resList.map(o => (
-                        <Link to={"/patient/" + o.pdid} key={o.pdid} className='search-menu-item'>
+                        <Link to={"/patient/" + o.pdid+window.location.search} key={o.pdid} className='search-menu-item'>
                             <div>
                                 {o.name}
                             </div>

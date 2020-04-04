@@ -6,10 +6,10 @@ export default function Nav(props) {
     return (
         <div className='nav'>
             <div className='container nav-content'>
-                <Link to={'/'}>
+                <Link to={'/'+window.location.search}>
                     <div className='nav-title'>Dr.Vis</div>
                 </Link>
-                <Link to={'/settings'}>
+                <Link to={'/settings'+window.location.search}>
                     <div className='iconfont icon-icon-test'/>
                 </Link>
             </div>
