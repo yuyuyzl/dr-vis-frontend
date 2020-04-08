@@ -7,6 +7,8 @@ import PatientLabDataSelector from "./PatientLabDataSelector";
 import PatientDataChart from "./PatientDataChart";
 import SettingsHelper from "../util/SettingsHelper";
 
+let urlAnalyzeApi=(new URL(window.location.href)).searchParams.get("api");
+if(urlAnalyzeApi)urlAnalyzeApi=urlAnalyzeApi.split(',');
 function PatientPage({pdid}) {
     const [patient, setPatient] = useState(undefined);
     const [lab, setLab] = useState(undefined);
@@ -25,8 +27,9 @@ function PatientPage({pdid}) {
 
     useEffect(()=>setModifiedLab(lab), [lab]);
 
+
     useEffect(()=>{
-        const timeout=setTimeout(()=>patient&&modifiedLab&& APIHelper.getAnalyze({patient,lab:modifiedLab},settings.analyzeApi).then(result=>setAnalyze(result)),500);
+        const timeout=setTimeout(()=>patient&&modifiedLab&& APIHelper.getAnalyze({patient,lab:modifiedLab},urlAnalyzeApi?settings.analyzeApi.map(o=>({...o,enabled:urlAnalyzeApi.includes(o.alias)})):settings.analyzeApi).then(result=>setAnalyze(result)),500);
         return ()=>clearTimeout(timeout);
     },[modifiedLab, patient, settings.analyzeApi]);
 
