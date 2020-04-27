@@ -32,7 +32,7 @@ class PatientInfo extends React.Component{
         const propertyName=i18n.patient;
         return (
             <div className={"patient-info"}>
-                {["pdid","age","gender","height","weight","death","deathDate","deathAge","deathReason","deathReasonText","originDisease","diabetes","outcome","duplicate",'scr',
+                {["pdid","age","gender","height","weight","death","deathDate","deathAge","deathReason","deathReasonText","originDisease","diabetes","outcome",'scr',
                     'heart_failure',
                     'lung_infect',
                     'chd',
@@ -49,8 +49,7 @@ class PatientInfo extends React.Component{
                     'bmi',
                     'epi',
                     'sbp',
-                    'dbp',
-                    'death_number'].map(key=>
+                    'dbp'].map(key=>
                     patient[key]?<InfoColumn key={key} title={propertyName[key]||key} content={patient[key]}/>:null
                 )}
             </div>
