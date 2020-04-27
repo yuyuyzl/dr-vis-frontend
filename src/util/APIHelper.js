@@ -33,6 +33,23 @@ const APIHelper={
         return await getApi('lab',{pdid:+id});
     },
     getAnalyze:async (patient,apiList)=>{
+        // let patient= {
+        //     patient: {
+        //         'pdid': patientData.patient['pdid'],
+        //         'name': patientData.patient['name'],
+        //         'birthDate': patientData.patient['birthDate'],
+        //         'age': patientData.patient['age'],
+        //         'gender': patientData.patient['gender'],
+        //         'death': patientData.patient['death'],
+        //         'deathDate': patientData.patient['deathDate'],
+        //         'deathAge': patientData.patient['deathAge'],
+        //         'deathReason': patientData.patient['deathReason'],
+        //         'height': patientData.patient['height'],
+        //         'weight': patientData.patient['weight'],
+        //     },
+        // lab:patientData.lab,
+        // };
+        // console.log(patientData,patient);
         const res=(await Promise.all(apiList.filter(api=>api.enabled)
             .map(api=>axios.post(api.url,patient).then(res=>({data:res.data,api})))))
             .reduce((p,c)=>({...c.data,...p}),{});
