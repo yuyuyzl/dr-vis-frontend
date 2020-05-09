@@ -50,7 +50,9 @@ class PatientInfo extends React.Component{
                     'epi',
                     'sbp',
                     'dbp'].map(key=>
-                    patient[key]?<InfoColumn key={key} title={propertyName[key]||key} content={patient[key]}/>:null
+                    patient[key]?
+                        <InfoColumn key={key} title={propertyName[key]||key} content={patient[key]}/>
+                        :null
                 )}
             </div>
         )

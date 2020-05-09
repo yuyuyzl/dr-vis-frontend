@@ -9,7 +9,8 @@ import SettingsHelper from "../util/SettingsHelper";
 
 let urlAnalyzeApi=(new URL(window.location.href)).searchParams.get("api");
 if(urlAnalyzeApi)urlAnalyzeApi=urlAnalyzeApi.split(',');
-function PatientPage({pdid}) {
+
+export default function PatientPage({pdid}) {
     const [patient, setPatient] = useState(undefined);
     const [lab, setLab] = useState(undefined);
     const [selectedGraph, setSelectedGraph] = useState([]);
@@ -63,5 +64,3 @@ function PatientPage({pdid}) {
 
 
 }
-
-export default PatientPage;

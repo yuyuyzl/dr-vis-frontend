@@ -13,6 +13,8 @@ const translation={
         deathDate: t("去世日期","Date of death"),
         deathAge: t("去世时年龄", "Age of death"),
         deathReason: t("死因","Death reason"),
+        originDisease: t("原疾病","Original Disease"),
+        deathReasonText: t("死因","Death reason"),
         height: t("身高(入院时)","Height"),
         weight: t("体重(入院时)","Weight"),
     },
